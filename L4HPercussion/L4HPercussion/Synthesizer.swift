@@ -78,6 +78,7 @@ class Synthesizer {
         let modulatorVelocity = modulatorFrequency * unitVelocity
         audioQueue.async() {
             var sampleTime: Float32 = 0
+            var amplitude: Float32 = 10
             
             // Wait for a buffer to become available.
             self.audioSemaphore.wait(timeout: DispatchTime.distantFuture)
@@ -87,7 +88,7 @@ class Synthesizer {
             let leftChannel = audioBuffer.floatChannelData?[0]
             let rightChannel = audioBuffer.floatChannelData?[1]
             for sampleIndex in 0 ..< Int(self.kSamplesPerBuffer) {
-                let sample = sin(carrierVelocity * sampleTime + modulatorAmplitude * sin(modulatorVelocity * sampleTime))
+                let sample = amplitude * sin(carrierVelocity * sampleTime + modulatorAmplitude * sin(modulatorVelocity * sampleTime))
                 leftChannel?[sampleIndex] = sample
                 rightChannel?[sampleIndex] = sample
                 sampleTime += 1

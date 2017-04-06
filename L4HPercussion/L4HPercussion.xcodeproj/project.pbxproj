@@ -308,6 +308,7 @@
 				621178BA1E96ACC400FD98E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
