@@ -78,7 +78,7 @@ class Synthesizer {
         let modulatorVelocity = modulatorFrequency * unitVelocity
         audioQueue.async() {
             var sampleTime: Float32 = 0
-            var amplitude: Float32 = 10
+            
             
             // Wait for a buffer to become available.
             self.audioSemaphore.wait(timeout: DispatchTime.distantFuture)
@@ -88,6 +88,7 @@ class Synthesizer {
             let leftChannel = audioBuffer.floatChannelData?[0]
             let rightChannel = audioBuffer.floatChannelData?[1]
             for sampleIndex in 0 ..< Int(self.kSamplesPerBuffer) {
+                let amplitude = self.adsr(sampleIndex: sampleIndex)
                 let sample = amplitude * sin(carrierVelocity * sampleTime + modulatorAmplitude * sin(modulatorVelocity * sampleTime))
                 leftChannel?[sampleIndex] = sample
                 rightChannel?[sampleIndex] = sample
@@ -108,6 +109,21 @@ class Synthesizer {
         playerNode.pan = 0.8
         playerNode.play()
         
+    }
+    
+    func adsr(sampleIndex: Int) -> Float32{
+        let tail: Int = Int(Float(self.kSamplesPerBuffer) * 0.8)
+        var envelope: Float = 0
+        if sampleIndex < tail {
+            let relativeIndex: Float = Float(tail - sampleIndex)
+            envelope = relativeIndex / Float(self.kSamplesPerBuffer)
+            let noise = Float(Float(arc4random()) / Float(UINT32_MAX)) / 10.0
+            let direction = Float(Float(arc4random()) / Float(UINT32_MAX)) > 0.5 ? Float(1.0) : Float(-1.0)
+            envelope = envelope + noise * direction
+        } else {
+            envelope = 0.0
+        }
+        return envelope
     }
     
     @objc  func audioEngineConfigurationChange(_ notification: Notification) -> Void {
