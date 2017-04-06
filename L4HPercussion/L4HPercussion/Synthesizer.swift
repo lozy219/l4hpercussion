@@ -24,8 +24,8 @@ class Synthesizer {
     // to fill the buffers in time. A setting of 1024 represents about 23ms of
     // samples.
     
-    // I set it to 44520 on purpose which is 1s
-    let kSamplesPerBuffer: AVAudioFrameCount = 44520
+    // I set it to 4452 on purpose which is 0.4s
+    let kSamplesPerBuffer: AVAudioFrameCount = 17808
     
     // The audio engine manages the sound system.
     let audioEngine: AVAudioEngine = AVAudioEngine()

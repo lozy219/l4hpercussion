@@ -11,7 +11,9 @@ import CoreMotion
 
 class ViewController: UIViewController {
     let motionManager = CMMotionManager()
-    var tempFlag = true
+    var tempMaxAcceleration = 0
+    var accelerationFlag = false
+    var playingFlag = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,9 +30,26 @@ class ViewController: UIViewController {
     
     func update() {
         if let deviceMotion = motionManager.deviceMotion {
-            if tempFlag {
-                Synthesizer.sharedSynth().play(carrierFrequency: Float32((deviceMotion.gravity.z + 1) / 2 * 440 + 440.0), modulatorFrequency: 0.0, modulatorAmplitude: 0.0)
-                tempFlag = false
+            if !self.playingFlag {
+                let currentAcceleration = Int(deviceMotion.userAcceleration.x)
+                if currentAcceleration > 0 {
+                    accelerationFlag = true
+                    tempMaxAcceleration = max(tempMaxAcceleration, currentAcceleration)
+                } else if accelerationFlag {
+                    // hitting end
+                    print(tempMaxAcceleration)
+                    tempMaxAcceleration = 0
+                    accelerationFlag = false
+                    self.playingFlag = true
+                    
+                    Synthesizer.sharedSynth().play(carrierFrequency: Float32((deviceMotion.gravity.z + 1) / 2 * 440 + 440.0), modulatorFrequency: 0.0, modulatorAmplitude: 0.0)
+                    
+                    Timer.scheduledTimer(withTimeInterval: 0.05, repeats: false, block: {
+                        t in
+                        
+                        self.playingFlag = false
+                    })
+                }
             }
         }
     }
