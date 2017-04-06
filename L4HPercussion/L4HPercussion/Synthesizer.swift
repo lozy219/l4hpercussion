@@ -112,11 +112,11 @@ class Synthesizer {
     }
     
     func adsr(sampleIndex: Int) -> Float32{
-        let tail: Int = Int(Float(self.kSamplesPerBuffer) * 0.8)
+        let release: Int = Int(Float(self.kSamplesPerBuffer) * 0.7)
         var envelope: Float = 0
-        if sampleIndex < tail {
-            let relativeIndex: Float = Float(tail - sampleIndex)
-            envelope = relativeIndex / Float(self.kSamplesPerBuffer)
+        if sampleIndex < release {
+            let relativeIndex: Float = Float(release - sampleIndex)
+            envelope = relativeIndex / Float(release)
             let noise = Float(Float(arc4random()) / Float(UINT32_MAX)) / 10.0
             let direction = Float(Float(arc4random()) / Float(UINT32_MAX)) > 0.5 ? Float(1.0) : Float(-1.0)
             envelope = envelope + noise * direction
