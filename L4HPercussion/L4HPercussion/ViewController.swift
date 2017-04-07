@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     var tempMaxAcceleration = 0
     var accelerationFlag = false
     var playingFlag = false
+    let majorInterval = [0, 2, 4, 7, 9]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,13 +39,18 @@ class ViewController: UIViewController {
                 } else if accelerationFlag {
                     // hitting end
                     print(tempMaxAcceleration)
-                    tempMaxAcceleration = 0
                     accelerationFlag = false
                     self.playingFlag = true
                     
-                    Synthesizer.sharedSynth().play(carrierFrequency: Float32((deviceMotion.gravity.z + 1) / 2 * 440 + 440.0), modulatorFrequency: 0.0, modulatorAmplitude: 0.0)
+                    let baseMidiNote = 96
                     
-                    Timer.scheduledTimer(withTimeInterval: 0.05, repeats: false, block: {
+                    let midiNote = majorInterval[Int(abs(deviceMotion.attitude.quaternion.x) * 5)] + baseMidiNote
+                    let frequency = frequencyOf(midiNote: midiNote)
+                    
+                    Synthesizer.sharedSynth().play(carrierFrequency: frequency, modulatorFrequency: 0.0, modulatorAmplitude: 0.0, force: tempMaxAcceleration)
+                    tempMaxAcceleration = 0
+                    
+                    Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false, block: {
                         t in
                         
                         self.playingFlag = false
@@ -52,6 +58,11 @@ class ViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    private func frequencyOf(midiNote: Int) -> Float32 {
+        let a: Float32 = 440.0
+        return a / 32.0 * Float32(pow(2.0, (Double(midiNote) - 9.0) / 12.0))
     }
     
     

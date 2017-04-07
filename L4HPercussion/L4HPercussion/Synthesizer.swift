@@ -24,8 +24,8 @@ class Synthesizer {
     // to fill the buffers in time. A setting of 1024 represents about 23ms of
     // samples.
     
-    // I set it to 4452 on purpose which is 0.4s
-    let kSamplesPerBuffer: AVAudioFrameCount = 17808
+    // I set it to 4452 on purpose which is 0.8s
+    let kSamplesPerBuffer: AVAudioFrameCount = 35616
     
     // The audio engine manages the sound system.
     let audioEngine: AVAudioEngine = AVAudioEngine()
@@ -72,7 +72,7 @@ class Synthesizer {
         NotificationCenter.default.addObserver(self, selector: #selector(Synthesizer.audioEngineConfigurationChange(_:)), name: NSNotification.Name.AVAudioEngineConfigurationChange, object: audioEngine)
     }
     
-    func play(carrierFrequency: Float32, modulatorFrequency: Float32, modulatorAmplitude: Float32) {
+    func play(carrierFrequency: Float32, modulatorFrequency: Float32, modulatorAmplitude: Float32, force: Int) {
         let unitVelocity = Float32(2.0 * M_PI / audioFormat.sampleRate)
         let carrierVelocity = carrierFrequency * unitVelocity
         let modulatorVelocity = modulatorFrequency * unitVelocity
@@ -89,7 +89,7 @@ class Synthesizer {
             let rightChannel = audioBuffer.floatChannelData?[1]
             for sampleIndex in 0 ..< Int(self.kSamplesPerBuffer) {
                 let amplitude = self.adsr(sampleIndex: sampleIndex)
-                let sample = amplitude * sin(carrierVelocity * sampleTime + modulatorAmplitude * sin(modulatorVelocity * sampleTime))
+                let sample = amplitude * sin(carrierVelocity * sampleTime + modulatorAmplitude * sin(modulatorVelocity * sampleTime)) * min(1, Float32(force * force * force) * 0.02)
                 leftChannel?[sampleIndex] = sample
                 rightChannel?[sampleIndex] = sample
                 sampleTime += 1
@@ -112,14 +112,11 @@ class Synthesizer {
     }
     
     func adsr(sampleIndex: Int) -> Float32{
-        let release: Int = Int(Float(self.kSamplesPerBuffer) * 0.7)
+        let release: Int = Int(Float(self.kSamplesPerBuffer) * 0.9)
         var envelope: Float = 0
         if sampleIndex < release {
-            let relativeIndex: Float = Float(release - sampleIndex)
+            let relativeIndex = Float(release - sampleIndex)
             envelope = relativeIndex / Float(release)
-            let noise = Float(Float(arc4random()) / Float(UINT32_MAX)) / 10.0
-            let direction = Float(Float(arc4random()) / Float(UINT32_MAX)) > 0.5 ? Float(1.0) : Float(-1.0)
-            envelope = envelope + noise * direction
         } else {
             envelope = 0.0
         }
