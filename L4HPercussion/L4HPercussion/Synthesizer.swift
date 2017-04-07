@@ -73,7 +73,7 @@ class Synthesizer {
     }
     
     func play(carrierFrequency: Float32, modulatorFrequency: Float32, modulatorAmplitude: Float32, force: Int) {
-        let unitVelocity = Float32(2.0 * M_PI / audioFormat.sampleRate)
+        let unitVelocity = Float32(2.0 * Double.pi / audioFormat.sampleRate)
         let carrierVelocity = carrierFrequency * unitVelocity
         let modulatorVelocity = modulatorFrequency * unitVelocity
         audioQueue.async() {
@@ -81,7 +81,7 @@ class Synthesizer {
             
             
             // Wait for a buffer to become available.
-            self.audioSemaphore.wait(timeout: DispatchTime.distantFuture)
+            let _ = self.audioSemaphore.wait(timeout: DispatchTime.distantFuture)
             
             // Fill the buffer with new samples.
             let audioBuffer = self.audioBuffers[self.bufferIndex]
@@ -112,6 +112,7 @@ class Synthesizer {
     }
     
     func adsr(sampleIndex: Int) -> Float32{
+        // hack hack hack
         let release: Int = Int(Float(self.kSamplesPerBuffer) * 0.9)
         var envelope: Float = 0
         if sampleIndex < release {

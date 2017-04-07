@@ -13,6 +13,7 @@
 		621178B11E96ACC400FD98E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 621178B01E96ACC400FD98E9 /* Assets.xcassets */; };
 		621178B41E96ACC400FD98E9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 621178B21E96ACC400FD98E9 /* LaunchScreen.storyboard */; };
 		621178BC1E96B50300FD98E9 /* Synthesizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621178BB1E96B50300FD98E9 /* Synthesizer.swift */; };
+		62A3BD5D1E97F5FF00351E70 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A3BD5C1E97F5FF00351E70 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		621178B31E96ACC400FD98E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		621178B51E96ACC400FD98E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		621178BB1E96B50300FD98E9 /* Synthesizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synthesizer.swift; sourceTree = "<group>"; };
+		62A3BD5C1E97F5FF00351E70 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				621178B21E96ACC400FD98E9 /* LaunchScreen.storyboard */,
 				621178B51E96ACC400FD98E9 /* Info.plist */,
 				621178BB1E96B50300FD98E9 /* Synthesizer.swift */,
+				62A3BD5C1E97F5FF00351E70 /* Constants.swift */,
 			);
 			path = L4HPercussion;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 				621178AC1E96ACC400FD98E9 /* ViewController.swift in Sources */,
 				621178AA1E96ACC400FD98E9 /* AppDelegate.swift in Sources */,
 				621178BC1E96B50300FD98E9 /* Synthesizer.swift in Sources */,
+				62A3BD5D1E97F5FF00351E70 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     var tempMaxAcceleration = 0
     var accelerationFlag = false
     var playingFlag = false
-    let majorInterval = [0, 2, 4, 7, 9]
+    let pentatonicInterval = [0, 2, 4, 7, 9]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +25,7 @@ class ViewController: UIViewController {
         motionManager.startMagnetometerUpdates()
         motionManager.startDeviceMotionUpdates()
         
-        let _ = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(update), userInfo: nil, repeats: true)
+        let _ = Timer.scheduledTimer(timeInterval: Constants.motionDetectionInterval, target: self, selector: #selector(update), userInfo: nil, repeats: true)
         
     }
     
@@ -38,19 +38,18 @@ class ViewController: UIViewController {
                     tempMaxAcceleration = max(tempMaxAcceleration, currentAcceleration)
                 } else if accelerationFlag {
                     // hitting end
-                    print(tempMaxAcceleration)
                     accelerationFlag = false
                     self.playingFlag = true
                     
-                    let baseMidiNote = 96
+                    let intervalOffset = Int(abs(deviceMotion.attitude.quaternion.x) * Double(pentatonicInterval.count))
+                    let midiNote = pentatonicInterval[intervalOffset] + Constants.baseMidiNote
+                    let playingFrequency = frequencyOf(midiNote: midiNote)
                     
-                    let midiNote = majorInterval[Int(abs(deviceMotion.attitude.quaternion.x) * 5)] + baseMidiNote
-                    let frequency = frequencyOf(midiNote: midiNote)
+                    Synthesizer.sharedSynth().play(carrierFrequency: playingFrequency, modulatorFrequency: 0.0, modulatorAmplitude: 0.0, force: tempMaxAcceleration)
                     
-                    Synthesizer.sharedSynth().play(carrierFrequency: frequency, modulatorFrequency: 0.0, modulatorAmplitude: 0.0, force: tempMaxAcceleration)
                     tempMaxAcceleration = 0
                     
-                    Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false, block: {
+                    Timer.scheduledTimer(withTimeInterval: Constants.motionDetectionReactivationInterval, repeats: false, block: {
                         t in
                         
                         self.playingFlag = false
@@ -61,8 +60,7 @@ class ViewController: UIViewController {
     }
     
     private func frequencyOf(midiNote: Int) -> Float32 {
-        let a: Float32 = 440.0
-        return a / 32.0 * Float32(pow(2.0, (Double(midiNote) - 9.0) / 12.0))
+        return 440.0 / 32.0 * Float32(pow(2.0, (Double(midiNote) - 9.0) / 12.0))
     }
     
     
