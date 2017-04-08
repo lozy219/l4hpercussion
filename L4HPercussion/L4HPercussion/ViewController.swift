@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var accelerationFlag = false
     var playingFlag = false
     let pentatonicInterval = [0, 2, 4, 7, 9]
+    let pitchColor = [UIColor.red, UIColor.yellow, UIColor.green, UIColor.blue, UIColor.purple]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +43,11 @@ class ViewController: UIViewController {
                     self.playingFlag = true
                     
                     let intervalOffset = Int(abs(deviceMotion.attitude.quaternion.x) * Double(pentatonicInterval.count))
+                    
+                    UIView.animate(withDuration: 0.3, animations: {
+                        self.view.backgroundColor = self.pitchColor[intervalOffset]
+                    })
+                    
                     let midiNote = pentatonicInterval[intervalOffset] + Constants.baseMidiNote
                     let playingFrequency = frequencyOf(midiNote: midiNote)
                     
@@ -53,6 +59,10 @@ class ViewController: UIViewController {
                         t in
                         
                         self.playingFlag = false
+                        
+                        UIView.animate(withDuration: 0.3, animations: {
+                            self.view.backgroundColor = UIColor.white
+                        })
                     })
                 }
             }

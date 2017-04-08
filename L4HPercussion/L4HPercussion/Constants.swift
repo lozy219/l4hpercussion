@@ -11,5 +11,5 @@ import Foundation
 struct Constants {
     static let motionDetectionInterval = 0.01
     static let baseMidiNote = 96
-    static let motionDetectionReactivationInterval = 0.25
+    static let motionDetectionReactivationInterval = 0.45
 }
